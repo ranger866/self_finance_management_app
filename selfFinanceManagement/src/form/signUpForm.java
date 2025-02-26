@@ -11,8 +11,9 @@ import java.sql.*;
 
 public class signUpForm extends JFrame {
     private JPanel panel;
-    private JLabel usernameLabel, passwordLabel;
-    private JTextField usernameField, passwordField;
+    private JLabel usernameLabel, passwordLabel, confirmPasswordLabel;
+    private JTextField usernameField;
+    private JPasswordField passwordField, confirmPasswordField;
     private JButton signUpButton, loginButton;
     private Connection conn;
     private final DBconnection dbConn = new DBconnection();
@@ -21,19 +22,21 @@ public class signUpForm extends JFrame {
         conn = dbConn.getConnection();
         
         setTitle("Sign Up");
-        setSize(300, 200);
+        setSize(350, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         panel = new JPanel();
-        panel.setLayout(new GridLayout(3, 2, 20, 20));
+        panel.setLayout(new GridLayout(4, 2, 20, 20));
 
         usernameField = new JTextField(15);
-        passwordField = new JTextField(15);
+        passwordField = new JPasswordField(15);
+        confirmPasswordField = new JPasswordField(1);
         signUpButton = new JButton("Sign Up");
         loginButton = new JButton("Login");
         usernameLabel = new JLabel("Username :");
         passwordLabel = new JLabel("Password :");
+        confirmPasswordLabel = new JLabel("Confirm Password :");
         
         // Styling
         panel.setBackground(Color.WHITE);
@@ -41,6 +44,7 @@ public class signUpForm extends JFrame {
         signUpButton.setForeground(Color.WHITE);
         usernameLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         passwordLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+        confirmPasswordLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         loginButton.setBackground(new Color(0, 123, 255));
         loginButton.setForeground(Color.WHITE);
         
@@ -49,6 +53,8 @@ public class signUpForm extends JFrame {
         panel.add(usernameField);
         panel.add(passwordLabel);
         panel.add(passwordField);
+        panel.add(confirmPasswordLabel);
+        panel.add(confirmPasswordField);
         panel.add(loginButton);
         panel.add(signUpButton);
 
@@ -56,14 +62,20 @@ public class signUpForm extends JFrame {
         signUpButton.addActionListener((ActionEvent e) -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
+            String confirmPassword = confirmPasswordField.getText();
             
-            if (signUp(username, password)) {
-                JOptionPane.showMessageDialog(null, "Sign Up Successful");
-                dispose();
-                new loginForm().setVisible(true);
+            if (password.equals(confirmPassword)){
+               if (signUp(username, password)) {
+               JOptionPane.showMessageDialog(null, "Sign Up Successful");
+               dispose();
+               new loginForm().setVisible(true);
+               } else {
+               JOptionPane.showMessageDialog(null, "Error signing up.");
+               }
             } else {
-                JOptionPane.showMessageDialog(null, "Error signing up.");
+                JOptionPane.showMessageDialog(null, "Password tidak sesuai", "Error", 1);
             }
+            
         });
         
         loginButton.addActionListener((ActionEvent e) -> {
